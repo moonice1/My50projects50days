@@ -28,7 +28,9 @@ function generateJoke() {
         }
     }
 
-    fetch('https://icanhazdadjoke.com', config).then((res) => res.json()).then((data) => {
-        jokeE1.innerHTML = data.joke
-    })
+    fetch('https://icanhazdadjoke.com', config)
+        .then((res) => res.json())
+        .then((data) => {
+            jokeE1.innerHTML = data.joke
+        })
 }

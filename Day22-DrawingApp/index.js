@@ -16,17 +16,23 @@ let isPressed = false
 let color = 'black'
 let x
 let y
+
 let data = []
+let record = []
+var times = -1
 
 // event.offsetX, event.offsetY 鼠标点击的位置距离div盒子的大小
 canvas.addEventListener('mousedown', (e) => {
     isPressed = true
-
+    record = []
+    times = times + 1
     x = e.offsetX
     y = e.offsetY
-    data.push({ xc: x, yc: y })
+
+    record.push({ xc: x, yc: y })
+    data[times] = record
 })
-console.log(data)
+console.log(record)
 
 canvas.addEventListener('mouseup', (e) => {
     isPressed = false
@@ -45,9 +51,11 @@ canvas.addEventListener('mousemove', (e) => {
 
         x = x2
         y = y2
-        data.push({ xc: x, yc: y })
+        record.push({ xc: x, yc: y })
     }
 })
+console.log(record)
+data[times] = record
 console.log(data)
 
 //x,y始终为起点,x2,y2为终点
@@ -96,7 +104,10 @@ decreaseBtn.addEventListener('click', () => {
 
 colorEl.addEventListener('change', (e) => color = e.target.value)
 
-clearEl.addEventListener('click', () => ctx.clearRect(0, 0, canvas.width, canvas.height))
+clearEl.addEventListener('click', () => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    data = []
+})
 
 exportBtn.addEventListener('click', () => {
     saveShareContent(JSON.stringify(data), 'draw.json')
@@ -124,9 +135,12 @@ document.getElementById('fileImport').addEventListener('click', () => {
 })
 function fileImport() {
     var selectedFile = document.getElementById('files').files[0]
-    console.log(selectedFile)
 
-    ctx.clearRect(0, 0, canvas.width, canvas.height)
+    console.log(selectedFile)
+    if (data || data.length !== 0) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height)
+        document.getElementById('files').value = ''
+    }
 
     var reader = new FileReader();//这是核心,读取操作就是由它完成.
     reader.readAsText(selectedFile);//读取文件的内容,也可以读取文件的URL
@@ -137,12 +151,16 @@ function fileImport() {
         var result = JSON.parse(this.result)
         console.log(typeof result)
 
-        for (let i = 0; i < result.length; i++) {
-
-            if (i < result.length - 1) {
-                drawCircle(result[i + 1].xc, result[i + 1].yc)
-                drawLine(result[i].xc, result[i].yc, result[i + 1].xc, result[i + 1].yc)
+        for (let j = 0; j < result.length; j++) {
+            if (result[j]) {
+                for (let i = 0; i < result[j].length; i++) {
+                    if (i < result[j].length - 1) {
+                        drawCircle(result[j][i + 1].xc, result[j][i + 1].yc)
+                        drawLine(result[j][i].xc, result[j][i].yc, result[j][i + 1].xc, result[j][i + 1].yc)
+                    }
+                }
             }
+
         }
     }
 

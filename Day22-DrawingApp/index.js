@@ -19,18 +19,20 @@ let y
 
 let data = []
 let record = []
-var times = -1
+var times = 0
 
 // event.offsetX, event.offsetY 鼠标点击的位置距离div盒子的大小
 canvas.addEventListener('mousedown', (e) => {
     isPressed = true
     record = []
-    times = times + 1
+    // times = times + 1
     x = e.offsetX
     y = e.offsetY
 
-    record.push({ xc: x, yc: y })
+
+    record.push({ xc: x, yc: y, yanse: color })
     data[times] = record
+    times++
 })
 console.log(record)
 
@@ -51,10 +53,11 @@ canvas.addEventListener('mousemove', (e) => {
 
         x = x2
         y = y2
-        record.push({ xc: x, yc: y })
+        record.push({ xc: x, yc: y, yanse: color })
     }
 })
 console.log(record)
+
 data[times] = record
 console.log(data)
 
@@ -62,14 +65,15 @@ console.log(data)
 
 //beginPath()开始一条路径，或重置当前的路径
 //context.arc(x,y,r,sAngle,eAngle,counterclockwise);
-function drawCircle(x, y) {
+function drawCircle(x, y, color) {
     ctx.beginPath()
     ctx.arc(x, y, size, 0, Math.PI * 2)
     ctx.fillStyle = color
+
     ctx.fill()
 }
 
-function drawLine(x1, y1, x2, y2) {
+function drawLine(x1, y1, x2, y2, color) {
     ctx.beginPath()
     ctx.moveTo(x1, y1)
     ctx.lineTo(x2, y2)
@@ -102,7 +106,8 @@ decreaseBtn.addEventListener('click', () => {
     updateSizeOnScreen()
 })
 
-colorEl.addEventListener('change', (e) => color = e.target.value)
+colorEl.addEventListener('change', (e) => color = e.target.value
+)
 
 clearEl.addEventListener('click', () => {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
@@ -155,8 +160,8 @@ function fileImport() {
             if (result[j]) {
                 for (let i = 0; i < result[j].length; i++) {
                     if (i < result[j].length - 1) {
-                        drawCircle(result[j][i + 1].xc, result[j][i + 1].yc)
-                        drawLine(result[j][i].xc, result[j][i].yc, result[j][i + 1].xc, result[j][i + 1].yc)
+                        drawCircle(result[j][i + 1].xc, result[j][i + 1].yc, result[j][i + 1].yanse)
+                        drawLine(result[j][i].xc, result[j][i].yc, result[j][i + 1].xc, result[j][i + 1].yc, result[j][i + 1].yanse)
                     }
                 }
             }
